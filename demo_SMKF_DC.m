@@ -2,8 +2,8 @@ clear
 clc
 close all
 
-% initial parameters
-nsteps = 100;
+%% initial parameters
+nsteps = 10;
 dT = 1;
 A = [1, dT; 0, 1];
 G = [ (dT^2) / 2; dT];
@@ -15,7 +15,7 @@ N1 = 5;
 N2 = 5;
 S_Z = 1;
 
-% target
+%% target
 X = zeros(nsteps, size(A, 1) );
 x0 = [0; 1];
 for i = 1 : nsteps
@@ -26,7 +26,7 @@ for i = 1 : nsteps
     end
 end
 
-% measurements
+%% measurements
 Z = zeros(nsteps, N);
 for i = 1 : nsteps
     for j = 1 : N
@@ -34,7 +34,7 @@ for i = 1 : nsteps
     end
 end
 
-% quantization Z2
+%% quantization Z2
 Z2 = Z(:, (N1 + 1) : (N1 + N2 ) );
 lower_bound = min(Z2(:) );
 upper_bound = max(Z2(:) );
@@ -51,6 +51,28 @@ end
 % testing
 for i = 1 : size(Z2, 1)
     for j = 1 : size(Z2, 2)
-        assert(abs(Z2(i, j) - partition(index(i, j) ) ) < sqrt(S_Z) )
+        assert(abs(Z2(i, j) - quants(i, j) ) < sqrt(S_Z) )
     end
+end
+
+%% set-membership Kalman filter
+x_pred = zeros(nsteps, size(X, 2) );
+P_pred= zeros(nsteps, size(X, 2), size(X, 2) );
+S_x_pred = zeros(nsteps, size(X, 2), size(X, 2) );
+x_upd = zeros(nsteps, size(X, 2) );
+P_upd = zeros(nsteps, size(X, 2), size(X, 2) );
+S_x_upd = zeros(nsteps, size(X, 2), size(X, 2) );
+x0 = [4; 2];
+P0 = diag( [4, 5] );
+S_x0 = diag( [2, 3] );
+% main loop
+for i = 1 : nsteps
+    % predict
+    
+    % pseudo-measurement
+    
+    % filter
+    
+    % archive
+    
 end
