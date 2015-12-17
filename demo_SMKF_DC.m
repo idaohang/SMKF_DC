@@ -3,7 +3,7 @@ clc
 close all
 
 %% initial parameters
-nsteps = 50;
+nsteps = 20;
 dT = 1;
 A = [1, dT; 0, 1];
 G = [ (dT^2) / 2; dT];
@@ -96,3 +96,11 @@ for i = 1 : nsteps
     P_upd(i, :, :) = P_upd_SMKF;
     S_x_upd(i, :, :) = S_x_upd_SMKF;
 end
+
+figure
+subplot(211)
+plot(1 : nsteps, X(:, 1), 1 : nsteps, x_upd(:, 1) )
+legend('true', 'estimate')
+subplot(212)
+plot(1 : nsteps, X(:, 2), 1 : nsteps, x_upd(:, 2) )
+legend('true', 'estimate')
