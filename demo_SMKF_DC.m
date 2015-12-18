@@ -65,6 +65,7 @@ S_x_pred = zeros(nsteps, size(X, 2), size(X, 2) );
 x_upd = zeros(nsteps, size(X, 2) );
 P_upd = zeros(nsteps, size(X, 2), size(X, 2) );
 S_x_upd = zeros(nsteps, size(X, 2), size(X, 2) );
+K_upd = zeros(nsteps, 2);
 % initial
 x0 = [4; 2];
 P0 = diag( [4, 5] );
@@ -86,8 +87,7 @@ for i = 1 : nsteps
     z_pseudo = Z_pseudo(i);
     S_z_pseudo = (N2 / N)^2 * S_z;
     % filter
-    [x_upd_SMKF, P_upd_SMKF, S_x_upd_SMKF] = SMKF_upd(z_pseudo, x_pred_SMKF, P_pred_SMKF, S_x_pred_SMKF, S_z_pseudo, H, r, N);
-    
+    [x_upd_SMKF, P_upd_SMKF, S_x_upd_SMKF, K_upd_SMKF] = SMKF_upd(z_pseudo, x_pred_SMKF, P_pred_SMKF, S_x_pred_SMKF, S_z_pseudo, H, r, N); 
     % archive
     x_pred(i, :) = x_pred_SMKF';
     P_pred(i, :, :) = P_pred_SMKF;
@@ -95,6 +95,7 @@ for i = 1 : nsteps
     x_upd(i, :) = x_upd_SMKF';
     P_upd(i, :, :) = P_upd_SMKF;
     S_x_upd(i, :, :) = S_x_upd_SMKF;
+    K_upd(i, :) = K_upd_SMKF';
 end
 
 figure

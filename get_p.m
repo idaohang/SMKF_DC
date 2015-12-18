@@ -1,3 +1,5 @@
-function p = get_p(P_pred_SMKF, S_x_pred_SMKF, S_z_pseudo)
+function p = get_p(S_x_pred_SMKF, S_z_pseudo, K_upd_SMKF, H)
 
-p = fminbnd(@(p) myfun(p, P_pred_SMKF, S_x_pred_SMKF, S_z_pseudo), 1e-2, 1e2);
+I = eye(size(K_upd_SMKF, 1) );
+
+p = sqrt(trace( (I - K_upd_SMKF * H) * S_x_pred_SMKF * (I - K_upd_SMKF * H)' ) ) / sqrt(trace(K_upd_SMKF * S_z_pseudo * K_upd_SMKF') );
