@@ -3,7 +3,7 @@ clc
 close all
 
 %% initial parameters
-nsteps = 20;
+nsteps = 50;
 dT = 1;
 A = [1, dT; 0, 1];
 G = [ (dT^2) / 2; dT];
@@ -97,11 +97,26 @@ for i = 1 : nsteps
     S_x_upd(i, :, :) = S_x_upd_SMKF;
     K_upd(i, :) = K_upd_SMKF';
 end
-
-figure
-subplot(211)
-plot(1 : nsteps, X(:, 1), 1 : nsteps, x_upd(:, 1) )
-legend('true', 'estimate')
-subplot(212)
-plot(1 : nsteps, X(:, 2), 1 : nsteps, x_upd(:, 2) )
-legend('true', 'estimate')
+%% plot
+axial_len = zeros(nsteps, 2);
+for i = 1 : nsteps
+    M = inv(shiftdim(S_x_upd(i, :, :) ) );
+    a = M(1, 1);
+    b = (M(1, 2) + M(2, 1) ) / 2;
+    c = M(2, 2);
+    d = - (2 * x_upd(i, 1) * M(1, 1) + x_upd(i, 2) * (M(1, 2) + M(2, 1) ) ) / 2;
+    f = - (2 * x_upd(i, 2) * M(2, 2) + x_upd(i, 1) * (M(1, 2) + M(2, 1) ) ) / 2;
+    g = (x_upd(i, 1) )^2 * M(1, 1) + (x_upd(i, 2) )^2 * M(2, 2) + x_upd(i, 1) * x_upd(i, 2) * (M(1, 2) + M(2, 1) ) - 1;
+    axial_len(i, :) = get_axial_len(a, b, c, d, f, g);
+end
+t = 1 : nsteps;
+[h1, h2] = plot_estimation_error(t, x_upd, axial_len, X);
+[h3, h4] = plot_axial_len(t, axial_len);
+%% log
+logTime = sprintf('%s', datestr(now,30));
+if ismac
+    dataName = strcat('log/data_', logTime);
+else
+    dataName = strcat('log\data_', logTime);
+end
+save(dataName);
